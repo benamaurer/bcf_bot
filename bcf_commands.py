@@ -2,7 +2,7 @@ import discord
 import datetime
 import time
 from python_vlookup import python_vlookup as vlookup
-from fuzzywuzzy import fuzz, process
+from fuzzywuzzy import process
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import os
@@ -17,10 +17,12 @@ def read_token():
         return lines[0].strip()
 
 
-def read_guild():
-    with open("bcf_guild.txt", "r") as f:
+def read_bcf(data):
+    with open("bcf_data.txt", "r") as f:
         lines = f.readlines()
-        return lines[0].strip()
+        for line in lines:
+            if str(data) in str(line.strip()):
+                return (str(line.split("=")[1].strip()))
 
 
 def log_sender(command, sender):
@@ -34,8 +36,8 @@ def log_sender(command, sender):
 books = ["Genesis", "Exodous", "Leviticus", "Numbers", "Deutoronomy", "Joshua", "Judges", "Ruth", "1 Samuel", "2 Samuel", "1 Kings", "2 Kings", "1 Chronicles", "2 Chronicles", "Ezra", "Nehemiah", "Esther", "Job", "Psalm", "Proverbs", "Ecclesiastes", "Song of Solomon", "Isaiah", "Jeremiah", "Lamentations", "Ezekiel", "Daniel", "Hosea", "Joel", "Amos", "Obadiah", "Jonah", "Micah", "Nahum", "Habakkuk", "Zephaniah", "Haggai", "Zechariah", "Malachi", "Matthew", "Mark", "Luke", "John", "Acts", "Romans", "1 Corinthians", "2 Corinthians", "Galatians", "Ephesians", "Philippians", "Colossians", "1 Thessalonians", "2 Thessalonians", "1 Timothy", "2 Timothy", "Titus", "Philemon", "Hebrews", "James", "1 Peter", "2 Peter", "1 John", "2 John", "3 John", "Jude", "Revelation"]
 line_break = "-------------------------------------------------------------------------\n "
 token = read_token()
-bcf_guild_ID = read_guild()
 client = discord.Client()
+guild_ID = int(read_bcf("guild_ID"))
 
 
 
@@ -261,8 +263,8 @@ print("startup successful.")
 
 @client.event
 async def on_message(message):
-    id = client.get_guild(bcf_guild_ID)
-    if message.guild.id != bcf_guild_ID:
+    id = client.get_guild(guild_ID)
+    if message.guild.id != guild_ID:
         return
 
 
@@ -301,7 +303,7 @@ async def on_message(message):
             log_sender(message.content, message.author)
 
             await message.channel.send("On Sunday, " + str(get_next_sunday() + "," + str(next_speaker())))
-            await message.channel.send("Click here for the full speaker schedule for 2020: https://drive.google.com/file/d/1fUqYGM0mKYu-xCPZOk_E1rsyWMQ30VxG/view?usp=sharing")
+            await message.channel.send("Click here for the full speaker schedule for 2020: " + read_bcf("gdoc_speakers"))
             print(line_break)
         except:
             print("Unable to complete " + message.content + ".")
@@ -319,7 +321,7 @@ async def on_message(message):
     if message.content.find("_livestream") != -1:
         try:
             log_sender(message.content, message.author)
-            await message.channel.send("Click on this link to go to the youtube livestream page: https://www.youtube.com/channel/UC9RiqW6sXyuW_yWZoVT7dWw/videos")
+            await message.channel.send("Click on this link to go to the youtube livestream page: " + read_bcf("livestream_link"))
             print(line_break)
         except:
             print("Unable to complete " + message.content + ".")
