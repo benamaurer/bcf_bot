@@ -370,13 +370,11 @@ async def on_message(message):
         try:
             log_sender(message.content, message.author)
             message_verse = find_verse(message.content)
-            print(message_verse)
+
             message_lines = message_verse.split("\n")
-            for line in message_lines:
-                print(line)
-                print(len(line))
+
             message_partial = ""
-            print("debug")
+
             for line in message_lines:
                 if len(message_partial) + len(line) < 2000:
                     message_partial = message_partial + line + "\n"
