@@ -26,7 +26,15 @@ def read_bcf(data):
         lines = f.readlines()
         for line in lines:
             if str(data) in str(line.strip()):
-                return (str(line.split("=")[1].strip()))
+                return (str(line.split(" = ")[1].strip()))
+
+
+# def write_bcf(data, new_value):
+#     with open("bcf_data_test.txt", "w+")
+#         lines = f.readlines()
+#         for line in lines:
+#             if str(data) in str(line.strip()):
+
 
 
 #Prints information to the console including: sender, command run, and time
@@ -79,6 +87,8 @@ def next_speaker():
     speaker = vlookup.vlookup(str(get_next_sunday()),'speaker_list_20.csv',2)
     if speaker.find("&") != -1:
         return " there is an open meeting with brother's meeting to follow"
+    elif speader.find("Topic") != -1:
+        return " there is a topic meeting."
     elif speaker.find("Open") != -1:
         return " there is an open meeting."
     else:
@@ -359,7 +369,22 @@ async def on_message(message):
     if message.content.find("_verse") != -1:
         try:
             log_sender(message.content, message.author)
-            await message.channel.send(find_verse(message.content))
+            message_verse = find_verse(message.content)
+            print(message_verse)
+            message_lines = message_verse.split("\n")
+            for line in message_lines:
+                print(line)
+                print(len(line))
+            message_partial = ""
+            print("debug")
+            for line in message_lines:
+                if len(message_partial) + len(line) < 2000:
+                    message_partial = message_partial + line + "\n"
+                else:
+                    await message.channel.send(message_partial)
+                    message_partial = ""
+            await message.channel.send(message_partial)
+
             print(line_break)
         except:
             print("Unable to complete " + message.content + ".")
@@ -391,5 +416,12 @@ async def on_message(message):
         except:
             print("Unable to complete " + message.content + ".")
 
+
+    # if message.content.find("_wed") != -1:
+    #     try:
+    #         log_sender(message.content, message.author)
+    #         await message.channel.send(update_wed(message.content))
+    #         print(line_break)
+    #     except:
 
 client.run(token)
