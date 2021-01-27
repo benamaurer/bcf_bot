@@ -1,0 +1,6 @@
+discord
+python_vlookup
+python-Levenshtein
+fuzzywuzzy
+urllib3
+bs4

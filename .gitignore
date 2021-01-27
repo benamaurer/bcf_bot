@@ -1,0 +1,7 @@
+.DS_Store
+bcf_data.txt
+speaker_list_20.csv
+sunday_school_20.csv
+token.txt
+venv/
+.idea*
